@@ -1,56 +1,38 @@
 package enviando.email;
 
-import java.util.Properties;
-
-import javax.mail.Address;
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
 public class AppTest {
 
-	private String userName = "jvdematos005@gmail.com";
-	private String senha = "password";
 	
 	@org.junit.Test // mesmo que o método main
-	public void testeEmail() {
-
-		// Olhe as configurações smtp do seu email
-		try {
-			Properties properties = new Properties();
-			properties.put("mail.smtp.auth", "true"); // autorização
-			properties.put("mail.smtp.starttls", "true");// autenticação
-			properties.put("mail.smtp.host", "smtp.gmail.com");// servidor do gmail do Google
-			properties.put("mail.smtp.port", "465"); // porta do servidor
-			properties.put("mail.smtp.socketFactory.port", "465");// Expecifica a porta a ser conectada pelo socket
-			properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");// classe socket de conexão// ao SMTP
-				
-			//session do javamail depedencia colocada no pom.xml
-            Session session = Session.getInstance(properties, new Authenticator() {
-            	@Override
-            	protected PasswordAuthentication getPasswordAuthentication() {
-            		
-            		return new PasswordAuthentication(userName, senha);
-            	}
-			});
-            //array de adrees pode mandar pra varios email users , pra quem vai ser enviado aqui
-            Address[] toUser = InternetAddress.parse("jvdematos004@gmail.com"); 
-			
-            Message message = new MimeMessage(session); //session do usuario que vai enviar os email
-            message.setFrom(new InternetAddress(userName)); //quem está enviando o email
-            message.setRecipients(Message.RecipientType.TO, toUser); //email de destino os array de email
-            message.setSubject("Ceghou o email Enviado com Java"); //assunto do email titulo qnd envia
-            message.setText("Ola programador, você acaba de receber um e-mail enviado com Java do curso Formação Java Web do Alex");//texto do envio do email
-          
-            Transport.send(message); //objeto de mensagem pra ser enviado
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void testeEmail() throws Exception {
+              
+		//passando mensagens com html no javamail
+		StringBuilder stringBuilderTextoEmail = new StringBuilder();
+		stringBuilderTextoEmail.append("Olá, <br/><br/>");
+		stringBuilderTextoEmail.append("Você está Recebendo o acesso ao curso de Java.<br/><br/>");
+		stringBuilderTextoEmail.append("Para ter acesso clique no botão abaixo. <br/><br/>");
+		stringBuilderTextoEmail.append("<b>Login:</b> seuemail@gmail.com <br/>");
+		stringBuilderTextoEmail.append("<b>Senha:</b> java-e-o-melhor-xw <br/><br/>");
+		
+		stringBuilderTextoEmail.append("<a target=\"_blank\" href=\"https://www.projetojavaweb.com/certificado-aluno/login\" style=\"color:#2525a7;  padding: 14px 24px; text-align:center; text-decoration:none; display:inline-block; border-radius:30px; font-size:20px; font-family:courier; border:3px solid green; background-color: #99DA39;\"> Acessar Portal do Aluno </a><br><br/>");
+		
+		stringBuilderTextoEmail.append("<span style=\"font-size: 8px;\">Ass.: Alex do Jdev Treinamento</span>");
+		
+		
+		ObjetoEnviaEmail enviaEmail  = 
+				new ObjetoEnviaEmail(
+						"jvdematos004@gmail.com", 
+						"João Victor JDEV",
+						"Testndo e-mail com Java",
+						stringBuilderTextoEmail.toString()); 
+		
+		//evio de email normal
+		//enviaEmail.enviarEmail(true); //false ou true se vai usar html ou não
+		
+		//envio do teste de pdf com email
+		enviaEmail.enviarEmailAnexo(true);
+		
+		 /*Caso o email não esteja sendo enviado então  coloque um tempo de espera
+         * mais isso só pode ser usado para testes Thread.sleep(5000); 5 segundos*/
 	}
-
 }
