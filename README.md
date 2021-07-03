@@ -3,6 +3,7 @@
 
 ## 🔖 Layout 
 
+![Email](https://user-images.githubusercontent.com/48605830/124340871-aa10d180-db8e-11eb-8beb-565676915279.png)
 
 
 
