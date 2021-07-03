@@ -3,6 +3,8 @@ package enviando.email;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -25,7 +27,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 public class ObjetoEnviaEmail {
 	
-	private String userName = "jvdematos005@gmail.com";
+	private String userName = "seuEmailQueVaiEnviarProsDestinatario@gmail.com";
 	private String senha = "suaSenha";
 	
 	private String listaDeDestinatarios = "";
@@ -126,18 +128,36 @@ public class ObjetoEnviaEmail {
 	        	corpoEmail.setText(textoEmail);//texto do envio do email
 	        }
 	        
+	        List<FileInputStream> arquivos = new ArrayList<FileInputStream>();
+	        
+	        //pode vir do banco de dados etc
+	        arquivos.add(simuladorDePDF());//certificado
+	        arquivos.add(simuladorDePDF());//nota fiscal
+	        arquivos.add(simuladorDePDF());//documento texto
+	        arquivos.add(simuladorDePDF());//Imagem
+	        
+	        //juntando a parte 1 e dois corpo email e anexoemail
+	        Multipart multipart = new  MimeMultipart(); 
+	        multipart.addBodyPart(corpoEmail);
+           
+            int index = 0;
+	        
+	        for (FileInputStream fileInputStream : arquivos) {
+	        	
+	        
 	        //parte 2 dos email que são os anexo em PDF
 	        MimeBodyPart anexoEmail = new MimeBodyPart();
 	        
 	        //onde é passado  o simulador de pdf você passa o seu aquivo gravado  no banco de dados ou qlq outro local
-	        anexoEmail.setDataHandler(new DataHandler(new ByteArrayDataSource(simuladorDePDF(),"application/pdf")));
-	        anexoEmail.setFileName("anexoemail.pdf");
+	        anexoEmail.setDataHandler(new DataHandler(new ByteArrayDataSource(simuladorDePDF(),"application/pdf"))); //aqui pode mudar pra doc text pdf de acordo com o arquivo que fosse enviar
+	        anexoEmail.setFileName("anexoemail"+index+".pdf");
 	      
+	        multipart.addBodyPart(anexoEmail);
 	        
-	        //juntando a parte 1 e dois corpo email e anexoemail
-	        Multipart multipart = new  MimeMultipart(); 
-               multipart.addBodyPart(corpoEmail);
-               multipart.addBodyPart(anexoEmail);
+	        index++;
+	        
+	        }
+              
 
                message.setContent(multipart);
                
@@ -145,7 +165,7 @@ public class ObjetoEnviaEmail {
 
 	}	 	
 	
-	 
+	  
 	
 	 //esse método simula o pdf ou qualquer arquivo que possa ser enviado por anexo no email
     //pode pegar o aquivo no banco de dados tb ou uma pasta ,base64, byte[],  Stream de arquivo
