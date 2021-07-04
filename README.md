@@ -18,6 +18,6 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 
 
 ## 💻 Projeto
-<p align="justify">Envio de E-mail com html ou não , e com anexo  pdf em uma lista com exemplo de enviar mais de um pdf usando o For each. </p>
+<p align="justify">Envio de E-mail com html ou não ultilizando o JavaMail e conhecendo suas funcionalidades , anexo com  pdf em uma lista com exemplo de enviar mais de um pdf usando o For each. </p>
 
 
